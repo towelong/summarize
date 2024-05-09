@@ -1,13 +1,13 @@
 import { Message, getSummary } from "@/utils";
 
 export default defineBackground(() => {
-  browser.action.onClicked.addListener((tab) => {
+  // @ts-ignore
+  browser.sidePanel
+    .setPanelBehavior({ openPanelOnActionClick: true })
     // @ts-ignore
-    browser.sidePanel
-      .setPanelBehavior({ openPanelOnActionClick: true })
-      // @ts-ignore
-      .catch((error) => console.error(error));
-  });
+    .catch((error) => console.error(error));
+
+  browser.action.onClicked.addListener((tab) => {});
 
   browser.runtime.onMessage.addListener(
     (message: Message, sender, sendResponse) => {
