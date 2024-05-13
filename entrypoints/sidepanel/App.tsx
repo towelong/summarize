@@ -17,7 +17,7 @@ function App() {
       type: MessageType.GET_SUMMARY,
     };
     setLoading(true);
-    let res = await browser.runtime.sendMessage("", message);
+    let res = await chrome.runtime.sendMessage("", message);
     if (res == "error") {
       setError(true);
     } else {

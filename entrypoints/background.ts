@@ -1,15 +1,13 @@
 import { Message, getSummary } from "@/utils";
 
 export default defineBackground(() => {
-  // @ts-ignore
-  browser.sidePanel
+  chrome.sidePanel
     .setPanelBehavior({ openPanelOnActionClick: true })
-    // @ts-ignore
     .catch((error) => console.error(error));
 
-  browser.action.onClicked.addListener((tab) => {});
+  chrome.action.onClicked.addListener((tab) => {});
 
-  browser.runtime.onMessage.addListener(
+  chrome.runtime.onMessage.addListener(
     (message: Message, sender, sendResponse) => {
       switch (message.type) {
         case MessageType.GET_SUMMARY:
@@ -20,10 +18,8 @@ export default defineBackground(() => {
                   content.title || "",
                   content.textContent
                 );
-                // @ts-ignore
                 sendResponse(summary.choices[0].message.content);
               } catch (e) {}
-              // @ts-ignore
               sendResponse("error");
             }
           );
@@ -35,11 +31,10 @@ export default defineBackground(() => {
     }
   );
 
-  browser.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
+  chrome.tabs.onUpdated.addListener(async function (tabId, changeInfo, tab) {
     if (changeInfo.status === "complete") {
       // if (currentTabId != 0 && tabId !== currentTabId) {
-      //   // @ts-ignore
-      //   // await browser.sidePanel.setOptions({
+      //   // await chrome.sidePanel.setOptions({
       //   //   tabId,
       //   //   enabled: false,
       //   // });
@@ -49,7 +44,7 @@ export default defineBackground(() => {
 });
 
 async function sendMessage(message: Message): Promise<any> {
-  const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tabs.length) {
     return;
   }
@@ -57,6 +52,6 @@ async function sendMessage(message: Message): Promise<any> {
   if (!tabId) {
     return;
   }
-  const res = await browser.tabs.sendMessage(tabId!, message);
+  const res = await chrome.tabs.sendMessage(tabId!, message);
   return res;
 }
